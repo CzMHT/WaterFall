@@ -52,21 +52,28 @@
     UICollectionViewLayoutAttributes *attr = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
     
     //找出最短那一列的 列号 和 最大Y值
-    NSNumber * shortest = self.colsHeight[0];
-    NSInteger  shortCol = 0;
+    NSInteger shortCol = 0;
+    
+//    //找出最短的那一列
+//    __block NSInteger minIndex = 0;
+//    [_colsHeight enumerateObjectsUsingBlock:^(NSNumber *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//        NSNumber *rolHeight = self.colsHeight[minIndex];
+//        if (rolHeight.floatValue > obj.floatValue) {
+//            minIndex = idx;
+//        }
+//    }];
     
     for (NSInteger i =0;i<self.colsHeight.count;i++) {
         
-        NSNumber* rolHeight = self.colsHeight[i];
+        NSNumber *minHeight = self.colsHeight[shortCol];
+        NSNumber *rolHeight = self.colsHeight[i];
         
-        if(shortest.floatValue>rolHeight.floatValue){
-            
-            shortest = rolHeight;
-            shortCol=i;
+        if (minHeight.floatValue > rolHeight.floatValue){
+            shortCol = i;
         }
     }
     CGFloat x = (shortCol+1)*ColMargin + shortCol * self.colWidth;
-    CGFloat y = shortest.floatValue + ColMargin;
+    CGFloat y = ((NSNumber *)self.colsHeight[shortCol]).floatValue + ColMargin;
     
     //获取cell高度
     CGFloat height=0;
@@ -78,7 +85,7 @@
     
     attr.frame = CGRectMake(x, y, self.colWidth, height);
     // 更新数组中的最大Y值
-    self.colsHeight[shortCol]=@(shortest.floatValue + ColMargin + height);
+    self.colsHeight[shortCol]=@(((NSNumber *)self.colsHeight[shortCol]).floatValue + ColMargin + height);
     
     return attr;
 }
